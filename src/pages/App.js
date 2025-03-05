@@ -15,7 +15,7 @@ function AppContent() {
     return <Login />;
   }
 
-  
+
   return (
       <div className="app-container">
         <Navbar />

@@ -1,14 +1,23 @@
-import React, { createContext, useState, useContext } from 'react';
+import React, { createContext, useState, useContext, useEffect} from 'react';
 import * as loginService from '../services/loginService';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState(null);
+  const token = localStorage.getItem('token')
+
+  useEffect(() => {
+    if (token) {
+      setAuth(JSON.parse(token));
+    }
+  }, [token]);
 
   const login = async (username, password) => {
+    
     try {
       const data = await loginService.login(username, password);
+      localStorage.setItem('token', JSON.stringify(data))
       setAuth(data);
       return data;
     } catch (error) {
@@ -20,6 +29,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (username, password) => {
     try {
       const data = await loginService.register(username, password);
+      localStorage.setItem('token', JSON.stringify(data))
       setAuth(data);
       return true;
     } catch (error) {
@@ -29,6 +39,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
     setAuth(null);
   };
 
